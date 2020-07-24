@@ -16,6 +16,20 @@ const ColorList = ({ colorList, setColorList }) => {
     setColorToEdit(color);
   };
 
+  const handleChange = (e) => {
+    setColorToEdit({ ...colorToEdit, [e.target.name]: e.target.value });
+  };
+
+  const handlePost = (e) => {
+    e.preventDefault();
+
+    axiosWithAuth()
+      .post('http://localhost:5000/api/colors', colorToEdit)
+      .then((res) => {
+        setColorList(res.data);
+      });
+  };
+
   const saveEdit = (e) => {
     e.preventDefault();
     // Make a put request to save your updated color
@@ -59,6 +73,24 @@ const ColorList = ({ colorList, setColorList }) => {
 
   return (
     <div className='colors-wrap'>
+      <form onSubmit={handlePost}>
+        <p>add a color</p>
+        <input
+          type='text'
+          name='color'
+          placeholder='Color Name'
+          value={colorToEdit.color}
+          onChange={handleChange}
+        />
+        <input
+          type='text'
+          name='code'
+          placeholder='Color Hex'
+          value={colorToEdit.code.hex}
+          onChange={handleChange}
+        />
+        <button>Add color</button>
+      </form>
       <p>colors</p>
       <ul>
         {colorList.map((color) => (
@@ -113,7 +145,6 @@ const ColorList = ({ colorList, setColorList }) => {
         </form>
       )}
       <div className='spacer' />
-      {/* stretch - build another form here to add a color */}
     </div>
   );
 };
